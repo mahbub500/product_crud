@@ -3,7 +3,16 @@
 $pdo = new PDO('mysql:host=localhost;port=3306;dbname=product','root','');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+
+$search = $_GET['search'];
+if ($search) {
+	$statement = $pdo->prepare('SELECT * FROM `product_crud` WHERE Title LIKE :title ORDER BY `crate_date` DESC');
+	$statement->bindValue(':title',"%$search%");
+
+}else{
 $statement = $pdo->prepare('SELECT * FROM `product_crud` ORDER BY `crate_date` DESC');
+
+}
 $statement->execute();
 $products = $statement->fetchAll(PDO::FETCH_ASSOC);
 // echo "<pre>";
@@ -22,11 +31,21 @@ $products = $statement->fetchAll(PDO::FETCH_ASSOC);
 <body>
 <div class="container">
 	<div class="row">
+
 		<div class="col-md-8">
-			<h3>All Product List</h3>
-			<div class="btn-group" role="group" aria-label="Basic outlined example">
+		
+					<h3>All Product List</h3>
+			<div class="btn-group mb-3" role="group" aria-label="Basic outlined example">
 					  <a type="button" href="create.php" target="_blank" class="btn btn-outline-primary">Create</a>
 			</div>
+			<form action="" method="get">
+				<div class="input-group mb-3">
+				  <input type="text" class="form-control" name="search" placeholder="Search For Product" value="<?php echo $search ?>">
+				  <div class="input-group-append">
+				    <button class="btn btn-outline-secondary" type="submit">Search</button>
+				  </div>
+				</div>
+			</form>
 			<table class="table  table-striped"  >
 			  <thead>
 			    <tr>
